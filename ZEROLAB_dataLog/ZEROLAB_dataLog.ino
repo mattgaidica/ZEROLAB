@@ -16,10 +16,11 @@ uint32_t syncTime = 0; // time of last sync()
 #define WAIT_TO_START    1  // Wait for serial input in setup()//WAIT FOR SWITCH
 
 // the digital pins that connect to the LEDs
+#define syncLED 2 //active LOW
 #define greenLEDpin 3
 #define redLEDpin 4
 #define recordButtonLED 5
-#define recordButton 6
+#define recordButton 6 //active LOW
 
 // The analog pins that connect to the sensors
 int zAxis = A0;
@@ -53,10 +54,13 @@ void setup(void)
   Serial.println();
   
   // use debugging LEDs
+  pinMode(syncLED, OUTPUT);
   pinMode(redLEDpin, OUTPUT);
   pinMode(greenLEDpin, OUTPUT);
   pinMode(recordButtonLED, OUTPUT);
   pinMode(recordButton, INPUT);
+  
+  digitalWrite(syncLED, HIGH);
   
 #if WAIT_TO_START
   //Serial.println("Type any character to start");
@@ -169,12 +173,15 @@ void loop(void)
   
   // blink LED to show we are syncing data to the card & updating FAT!
   if(digitalRead(recordButton)==0) {
-#if ECHO_TO_SERIAL
-  Serial.println("writing...");
-#endif // ECHO_TO_SERIAL
+  #if ECHO_TO_SERIAL
+    Serial.println("writing...");
+  #endif // ECHO_TO_SERIAL
+    digitalWrite(syncLED, LOW);
     digitalWrite(redLEDpin, HIGH);
     logfile.flush();
     digitalWrite(redLEDpin, LOW);
+  } else {
+    digitalWrite(syncLED, HIGH);
   }
 }
 
