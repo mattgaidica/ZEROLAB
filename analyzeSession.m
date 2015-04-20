@@ -4,7 +4,7 @@
 % 
 
 function spikeFreq=analyzeSession(videoFPS)
-[f,p] = uigetfile('*.csv');
+[f,p] = uigetfile({'*.csv'},'Select session CSV...','/Users/mattgaidica/Documents/Data/ZEROLAB');
 fid = fopen(fullfile(p,f));
 sessionInfo = textscan(fid,'%s%s%f','delimiter',',');
 fclose(fid);
@@ -13,7 +13,7 @@ for ii=1:length(sessionInfo{1})
     %z-axis data
     arduinoData = csvread(sessionInfo{1,1}{ii},1,0);
     zAxis = convertAccToG(arduinoData(:,4));
-    h=figure('position',[500 500 900 300]);
+    h = figure('position',[500 500 900 300]);
     plot(zAxis);
     zoom on;
     waitfor(gcf,'CurrentCharacter',char(13)); %wait for enter
@@ -46,6 +46,7 @@ for ii=1:length(sessionInfo{1})
     plot([zerogInterval zerogInterval],[-.5 3],'--','color','k');
     xlabel('time (s)');
     ylabel('g');
+    grid on;
     
     %nex
     nexfile = [sessionInfo{1,2}{ii},'.nex'];
@@ -67,6 +68,7 @@ for ii=1:length(sessionInfo{1})
     xlabel('time (s)');
     ylabel('amplitude');
     legend('raw','raster');
+    grid on;
     
     hs(3) = subplot(3,1,3);
     histBin = 20;
@@ -81,6 +83,7 @@ for ii=1:length(sessionInfo{1})
     ylim([0 max(counts)]);
     xlabel('time (s)');
     ylabel('spikes/s');
+    grid on;
     
     linkaxes(hs,'x');
     
