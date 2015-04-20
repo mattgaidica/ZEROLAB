@@ -3,7 +3,7 @@
 % 1) arduino z-axis 2) raw data epochs 3) hist
 % 
 
-function epochSpikeCount=analyzeSession(videoFPS)
+function spikeFreq=analyzeSession(videoFPS)
 [f,p] = uigetfile('*.csv');
 fid = fopen(fullfile(p,f));
 sessionInfo = textscan(fid,'%s%s%f','delimiter',',');
@@ -85,9 +85,9 @@ for ii=1:length(sessionInfo{1})
     linkaxes(hs,'x');
     
     %output data
-    epochSpikeCount(1) = length(find(ts >= zerogStartTs & ts < zerogStartTs+zerogInterval)); %before
-    epochSpikeCount(2) = length(find(ts >= zerogStartTs+zerogInterval & ts < zerogEndTs-zerogInterval)); %during
-    epochSpikeCount(3) = length(find(ts >= zerogEndTs-zerogInterval & ts < zerogEndTs)); %after
+    spikeFreq(1) = length(find(ts >= zerogStartTs & ts < zerogStartTs+zerogInterval))/zerogInterval; %before
+    spikeFreq(2) = length(find(ts >= zerogStartTs+zerogInterval & ts < zerogEndTs-zerogInterval))/zerogInterval; %during
+    spikeFreq(3) = length(find(ts >= zerogEndTs-zerogInterval & ts < zerogEndTs))/zerogInterval; %after
     
     disp('end');
 end
