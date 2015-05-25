@@ -3,7 +3,8 @@
 % 1) arduino z-axis 2) raw data epochs 3) hist
 % 
 
-function spikeFreq=analyzeSession(videoFPS)
+function spikeFreq=analyzeSession()
+videoFPS = 240;
 [f,p] = uigetfile({'*.csv'},'Select session CSV...','/Users/mattgaidica/Documents/Data/ZEROLAB');
 fid = fopen(fullfile(p,f));
 sessionInfo = textscan(fid,'%s%s%f','delimiter',',');
@@ -19,7 +20,7 @@ for ii=1:length(sessionInfo{1})
     waitfor(gcf,'CurrentCharacter',char(13)); %wait for enter
     zoom reset;
     zoom off;
-    [zAxisInflects,~] = ginput(3); %select start, weightless, end
+    [zAxisInflects,~] = ginput(3); %select drop, zero-g, impact
     disp(zAxisInflects);
     close(h);
     zAxisInflectsTs = (arduinoData(round(zAxisInflects),1) - arduinoData(1,1))/1000; %convert to sec
@@ -27,7 +28,7 @@ for ii=1:length(sessionInfo{1})
     
     %movie data
     [y,Fs] = audioread(sessionInfo{1,2}{ii});
-    vidRefStartTs = sessionInfo{1,3}(1)/videoFPS;
+    vidRefStartTs = sessionInfo{1,3}(ii)/videoFPS;
     zerogStartTs = vidRefStartTs + zAxisInflectsTs(1) - zerogInterval;
     zerogEndTs = vidRefStartTs + zAxisInflectsTs(3) + zerogInterval;
     
@@ -71,7 +72,7 @@ for ii=1:length(sessionInfo{1})
     grid on;
     
     hs(3) = subplot(3,1,3);
-    histBin = 20;
+    histBin = 50;
     [counts,centers] = hist(ts(intervalTsIdx)-zerogStartTs-zerogInterval,histBin);
     binWidthTs = (zerogInterval*3)/histBin;
     counts = counts/binWidthTs;
