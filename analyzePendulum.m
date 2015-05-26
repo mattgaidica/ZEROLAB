@@ -31,9 +31,10 @@ h1 = histogram(zDiffSpikes,50);
 hold on;
 h2 = histogram(zAxisDiff,50);
 xlim([-1 1]);
-legend('zDiffSpikes','sAxizDiff');
+legend('zDiffSpikes','sAxisDiff');
 
 subplot(212);
 b = bar(h1.BinEdges(1:end-1),h1.Values-h2.Values);
 set(b,'FaceColor',[.7 .2 .2],'EdgeColor','none');
 xlim([-1 1]);
+disp('end');
